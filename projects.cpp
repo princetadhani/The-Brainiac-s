@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <math.h>
-using namespace std;//by kenisha vora
+using namespace std;
 
 class TT
 {
