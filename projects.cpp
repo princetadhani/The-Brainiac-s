@@ -9,8 +9,8 @@ public:
     void getNumberOfInputs(string input); // m1
     void makeTT();
     vector<char> vars;
-    vector<vector<bool>> ourTT;
-    vector<vector<bool>> result;
+    vector<vector<bool> > ourTT;
+    vector<vector<bool> > result;
     vector<bool> intermediate;
     vector<bool> zero;
     int length;
@@ -207,7 +207,7 @@ void TT::findalg(string input)
             for (int j = 0; j < length; j++)
             {
                 // result[resultcounter][j] = !getValue(input[i + 1], j);
-                result[resultcounter][j] = (getValue(input[i], j + 1));
+                result[resultcounter][j] = !(result[resultcounter][j]);
                 // cout << "ans :" << (~result[resultcounter][j]);
 
                 // result[resultcounter][j] = (!(getValue(input[i + 1], j)));
