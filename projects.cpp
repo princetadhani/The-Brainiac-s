@@ -1,6 +1,8 @@
 #include <iostream>
 #include <vector>
 #include <math.h>
+#include <conio.h>
+#include <windows.h>
 using namespace std;
 
 class TT
@@ -9,29 +11,27 @@ public:
     void getNumberOfInputs(string input); // m1
     void makeTT();
     vector<char> vars;
-    vector<vector<bool> > ourTT;
-    vector<vector<bool> > result;
+    vector<vector<bool>> ourTT;
+    vector<vector<bool>> result;
     vector<bool> intermediate;
     vector<bool> zero;
     int length;
     void printTT();
     void findalg(string input);
     bool getValue(char var, int j);
-    // void exception(string input);
     int resultcounter;
     TT();
 };
 
 TT::TT()
 {
-    resultcounter = 0;
+    resultcounter = -1;
 }
 
 void TT::makeTT()
 {
     length = pow(2, vars.size());
     int width = vars.size();
-
     vector<bool> temp;
     bool tempint;
     for (int i = 0; i < vars.size(); i++)
@@ -57,60 +57,49 @@ void TT::makeTT()
         temp.clear();
     }
     result.push_back(zero);
-    // resultcounter++;
-    //  return;
+    resultcounter++;
+    // return;
 }
 
 void TT::printTT()
 {
     cout << endl;
     // cout << endl;
+    cout << "Loading";
+    for (int i = 0; i < 6; i++)
+    {
+        cout << ".";
+        Sleep(1000);
+    }
+    // Sleep();
+    system("cls");
+    cout<<"\t\t\t";
     for (int j = 0; j < vars.size(); j++)
     {
+        
         cout << vars[j] << "  ";
     }
-    cout << "   F(output)" << endl;
-
+    cout << "F(output)" << endl;
+    
     for (int j = 0; j < pow(2, vars.size()); j++)
     {
+        cout<<"\t\t\t";
         for (int i = vars.size() - 1; i >= 0; i--)
         {
+            
             cout << ourTT[i][j] << "  ";
         }
-        cout << "   " << result[resultcounter][j] << endl;
+        cout << result[resultcounter][j] << endl;
     }
     cout << endl;
     cout << endl;
     return;
 }
 
-// void TT::exception(string input)
-//{
-//     for (int i = 0; i < length; i++)
-//     {
-//        if (input[i] == '_')
-//        {
-//            for (int j = 0; j < length; j++)
-//            {
-//               if (ourTT[0][0] == 0)
-//               {
-//                   cout << 1 << " " << endl;
-//              }
-//              else
-//              {
-//                  cout << 2 << " " << endl;
-//              }
-//          }
-//      }
-//  }
-//}
-
-void TT::getNumberOfInputs(string input) // 1
+void TT::getNumberOfInputs(string input)
 {
     int j = 0;
-
     cout << "Function: ";
-
     for (int i = 0; i < input.size(); i++)
     {
         cout << input[i];
@@ -125,12 +114,14 @@ void TT::getNumberOfInputs(string input) // 1
             }
             if (j == vars.size())
             {
-                vars.push_back(input[i]); // adding the remaining variable
+                vars.push_back(input[i]);
             }
         }
     }
     cout << endl
-         << "Number of inputs: " << vars.size() << endl;
+         << "Number of inputs: " << vars.size(); // << endl;
+    ;
+    return;
 }
 
 void TT::findalg(string input)
@@ -142,9 +133,7 @@ void TT::findalg(string input)
         // cout << input[i] << "  " << i << "  " << input[i + 1] << endl;
         switch (input[i])
         {
-            cout << input[i] << endl;
-        case '^': // for Anding operation
-            cout << "and case :";
+        case '&': // for anding operation
             if (input[i + 1] != '(')
             {
                 for (int j = 0; j < length; j++)
@@ -172,8 +161,7 @@ void TT::findalg(string input)
             }
             break;
 
-        case '*': // for nand operation
-            cout << "nand :";
+        case '!': // for nand operation
 
             for (int j = 0; j < length; j++)
             {
@@ -183,18 +171,14 @@ void TT::findalg(string input)
             break;
 
         case '+': // for or operation
-            cout << "or case :";
-
             for (int j = 0; j < length; j++)
             {
-                cout << result[resultcounter][j];
                 result[resultcounter][j] = (result[resultcounter][j] | getValue(input[i + 1], j));
             }
             input.erase(i, 2);
             break;
 
         case '%': // for nor operation
-            cout << "nor :";
             for (int j = 0; j < length; j++)
             {
                 result[resultcounter][j] = !(result[resultcounter][j] | getValue(input[i + 1], j));
@@ -202,33 +186,15 @@ void TT::findalg(string input)
             input.erase(i, 2);
             break;
 
-        case '-':
-            cout << "ans :";
+        case '-': // for not gate_b
             for (int j = 0; j < length; j++)
             {
-                // result[resultcounter][j] = !getValue(input[i + 1], j);
                 result[resultcounter][j] = !(result[resultcounter][j]);
-                // cout << "ans :" << (~result[resultcounter][j]);
-
-                // result[resultcounter][j] = (!(getValue(input[i + 1], j)));
-
-                // for (int m = 0; m < length; m++)
-                //{
-                //    if (ourTT[j][m] == 0)
-                //    {
-                //        result[resultcounter][j] = 1;
-                //    }
-                //    else
-                //    {
-                //        result[resultcounter][j] = 0;
-                //    }
-                //}
             }
             input.erase(i, 1);
             break;
 
         case '#': // EX-or gate
-            cout << "ex or :";
             for (int j = 0; j < length; j++)
             {
                 result[resultcounter][j] = (result[resultcounter][j] ^ getValue(input[i + 1], j));
@@ -244,7 +210,6 @@ void TT::findalg(string input)
         }
         // printTT();
         // cout << input << endl;
-        // i++;
     }
     return;
 }
@@ -253,12 +218,8 @@ bool TT::getValue(char var, int j)
 {
     for (int i = 0; i < vars.size(); i++)
     {
-        // cout << "in loop";
         if (vars[vars.size() - i - 1] == var)
-        {
-            // cout << "in if";
             return ourTT[i][j];
-        }
     }
     cout << "ERROR" << endl;
     return false;
@@ -266,33 +227,62 @@ bool TT::getValue(char var, int j)
 
 int main()
 {
+
+label:
+    system("cls");
     TT ourFunction;
-    cout << "-->THERE ARE SOME INSTRUCTIONS FOR USING SIGN:" << endl;
-    cout << "use ' ^ ' sign for AND operation" << endl;
+    cout << "\t\t\t WELCOME TO LOGIC GATE OPERATION";
+    for (int i = 0; i < 6; i++)
+    {
+        cout << ".";
+        Sleep(1000);
+    }
+
+    cout << endl
+         << endl
+         << "-->THERE ARE SOME INSTRUCTIONS FOR USING SIGN:" << endl;
+    cout << "use ' & ' sign for AND operation" << endl;
     cout << "use ' ! ' sign for NAND operation" << endl;
     cout << "use ' + ' sign for OR operation" << endl;
     cout << "use ' % ' sign for NOR operation" << endl;
     cout << "use ' # ' sign for EX-OR operation" << endl;
     string input;
-    cout << "Please enter a boolean expression: ";
-    getline(cin, input);
-    // for (int h = 0; h < input.size(); h++)
-    //{
-    //     if (input[h] == '_')
-    //     {
-    //         exception(input);
-    //     }
-    // }
+    cout << endl
+         << "Please enter a boolean expression: ";
+    cin >> input;
+
     input = "+" + input;
+
     for (int i = 0; i < input.size(); i++)
         input[i] = toupper(input[i]);
 
     ourFunction.getNumberOfInputs(input);
-    cout << "Inputs Counted" << endl;
+
+    cout << " Inputs Counted" << endl;
     ourFunction.makeTT();
-    cout << "TT made" << endl;
+    cout << "Truth Table made" << endl;
     // ourFunction.printTT();
     ourFunction.findalg(input);
     ourFunction.printTT();
+    cout << "PRESS ANY KEY TO CONTINUE....." << endl
+         << "IF YOU WANT TO END THE PROGRAM PRESS E/e....." << endl;
+    char q;
+    cin >> q;
+    // system("cls");
+    if (q == 'e' || q == 'E')
+    {
+        cout << endl
+             << "THANK YOU";
+        for (int i = 0; i < 4; i++)
+        {
+            cout << ".";
+            Sleep(1000);
+        }
+        // break;
+    }
+    else
+    {
+        goto label;
+    }
     return 0;
 }
